@@ -1,0 +1,70 @@
+en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_meta_pixel_capi: "Meta Pixel & Conversions API"
+  js:
+    discourse_meta_pixel:
+      admin:
+        title: "Meta Pixel"
+        diagnostics: "Diagnostics"
+        configuration: "Configuration"
+        browser_state: "Browser state"
+        delivery: "Conversions API delivery"
+        recent: "Recent deliveries"
+        events: "Events"
+        enabled: "Plugin enabled"
+        pixel_enabled: "Pixel enabled"
+        dataset_id: "Pixel / dataset ID"
+        capi_enabled: "Conversions API enabled"
+        access_token: "Access token configured"
+        access_token_hint: "(the token itself is never displayed)"
+        graph_version: "Graph API version"
+        test_mode: "Test Events code configured"
+        matching: "Matching"
+        email_matching: "email:"
+        external_id_matching: "external ID:"
+        pixel_initialized: "Pixel initialised"
+        fbq_available: "window.fbq available"
+        pixel_events: "Pixel events this page load"
+        mirrored: "mirrored to server:"
+        mirror_failures: "mirror failures:"
+        retention: "Retention (days)"
+        last_success: "Last success"
+        last_failure: "Last failure"
+        event: "Event"
+        event_id: "Event ID"
+        source: "Source"
+        status: "Status"
+        attempts: "Attempts"
+        error: "Last error"
+        excluded_by_group: >-
+          You are in a group excluded by the "meta pixel excluded groups" setting, so this browser
+          sends no Meta events. Everything below reflects that exclusion, not a fault.
+        not_configured: "not configured"
+        # Quoted, and they must stay quoted: YAML 1.1 reads bare `yes` and `no`
+        # as booleans, so unquoted these parse as the keys true/false and every
+        # lookup renders as "Translation missing".
+        "yes": "Yes"
+        "no": "No"
+        reload: "Reload"
+        warnings:
+          capi_without_token: >-
+            The Conversions API is enabled but no access token is configured. Delivery happens in
+            the background, so this fails invisibly: every conversion is queued and every one fails
+            permanently. Set "meta pixel capi access token", or turn the Conversions API off.
+          pixel_without_id: >-
+            The Pixel is enabled but no Pixel / dataset ID is configured, so no Pixel has been
+            loaded. Set "meta pixel dataset id".
+          test_mode_active: >-
+            A Test Events code (%{test_event_code}) is configured. Events are going to the Test
+            Events tab in Events Manager and are NOT counting as conversions. Clear the code when
+            you have finished verifying.
+          stuck_deliveries: >-
+            %{count} conversions have been retrying for more than a day. Check the last error
+            below — a persistent failure usually means an expired access token or a Pixel ID that
+            the token does not have access to.
+          recent_failures: >-
+            %{count} conversions failed permanently in the last 24 hours. These are not retried.
+            The last error is shown below.

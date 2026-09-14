@@ -1,0 +1,14 @@
+{
+  "extends": "discourse/tsconfig-plugin",
+  "include": [
+    "admin/assets/javascripts/**/*",
+    "assets/javascripts/**/*",
+    "test/javascripts/**/*"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "discourse/plugins/discourse-meta-pixel-capi/*": ["./assets/javascripts/*"],
+      "discourse/plugins/discourse-meta-pixel-capi/admin/*": ["./admin/assets/javascripts/admin/*"]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+.meta-pixel-admin {
+  &__section {
+    margin-bottom: 1.5em;
+
+    h3 {
+      margin-bottom: 0.5em;
+    }
+  }
+
+  &__row {
+    margin-bottom: 0.25em;
+  }
+
+  &__hint {
+    color: var(--primary-medium);
+    font-size: var(--font-down-1);
+  }
+
+  &__error {
+    color: var(--danger);
+  }
+
+  &__deliveries {
+    width: 100%;
+
+    td,
+    th {
+      padding: 0.25em 1em 0.25em 0;
+      text-align: left;
+    }
+  }
+}

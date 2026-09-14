@@ -1,0 +1,87 @@
+en:
+  site_settings:
+    discourse_meta_pixel_enabled: "Enable the Meta Pixel and Conversions API integration."
+    meta_pixel_pixel_enabled: "Load the Meta Pixel in the browser."
+    meta_pixel_dataset_id: >-
+      Your Meta Pixel ID, also called the dataset ID in the Conversions API documentation. It is the
+      same numeric value and it is not a secret — it is visible in the page source.
+    meta_pixel_capi_enabled: >-
+      Send a server-side copy of events through the Conversions API. Requires an access token.
+      Browser and server copies share one event ID so Meta deduplicates them.
+    meta_pixel_capi_access_token: >-
+      Conversions API access token from Events Manager. <b>Server-side secret.</b> It is never sent
+      to the browser and never shown in diagnostics.
+    meta_pixel_graph_api_version: >-
+      Graph API version used for Conversions API requests, for example v26.0. Meta supports each
+      version for at least two years.
+    meta_pixel_test_event_code: >-
+      Test Events code from Events Manager. <b>Only set this while verifying.</b> Events sent with a
+      test code appear in the Test Events tab and do not count as conversions.
+    meta_pixel_track_page_view: "Send PageView for eligible pages."
+    meta_pixel_track_view_content: "Send ViewContent when a publicly visible topic is opened."
+    meta_pixel_track_search: >-
+      Send Search when a full-page search runs. The search text itself is never forwarded.
+    meta_pixel_track_topic_engaged: "Send the custom TopicEngaged event after meaningful reading."
+    meta_pixel_topic_engaged_seconds: >-
+      Seconds of active reading before TopicEngaged fires. Only time with the tab visible, the
+      window focused and the reader interacting counts.
+    meta_pixel_track_complete_registration: "Send CompleteRegistration when an account is created."
+    meta_pixel_track_topic_created: "Send the custom TopicCreated event for a new public topic."
+    meta_pixel_track_reply_created: "Send the custom ReplyCreated event for a reply to a public topic."
+    meta_pixel_enhanced_email_matching: >-
+      Include a SHA-256 hash of the member's email address in Conversions API events to improve
+      match quality. The email is read server-side, hashed before sending, never written to
+      JavaScript, never logged and never stored by this plugin. Off by default — enabling it
+      materially increases what is shared with Meta.
+    meta_pixel_external_id_matching: >-
+      Include an opaque, stable identifier derived from the user ID with an HMAC. Never a username
+      or an email address.
+    meta_pixel_excluded_groups: >-
+      Members of these groups produce <b>no Meta events at all</b> — not the browser Pixel and not the
+      Conversions API, including topic and reply conversions raised on the server. Meta has no
+      equivalent of GA4's internal-traffic filter, so an event that arrives has already been counted
+      and can already train a campaign; the only exclusion that works is not sending it. Leave empty
+      to exclude nobody.
+    meta_pixel_respect_do_not_track: >-
+      Send nothing at all for visitors whose browser reports a Do Not Track preference.
+    meta_pixel_public_content_only: >-
+      Only send content events for topics an anonymous visitor could read. Private messages are
+      excluded unconditionally and are not affected by this setting.
+    meta_pixel_batch_size: >-
+      How many conversions to send to Meta in one request. Meta accepts up to 1000. Higher means
+      fewer requests; lower means a batch Meta rejects is cheaper to unpick.
+    meta_pixel_batch_max_wait_seconds: >-
+      How long a partly-filled batch waits before being sent anyway. Keep this well under 48 hours:
+      Meta only deduplicates the browser and server copies of an event within that window, and past
+      it the same conversion is counted twice.
+    meta_pixel_delivery_retention_days: >-
+      Days to keep delivery records before purging them. Must exceed Meta's 48 hour deduplication
+      window; the minimum is 7 days.
+    meta_pixel_debug_mode: "Log dispatched events to the browser console."
+
+    errors:
+      meta_pixel_invalid_dataset_id: "A Meta Pixel / dataset ID is a numeric string of at least 5 digits."
+      meta_pixel_invalid_graph_api_version: "The Graph API version must look like v26.0."
+      meta_pixel_capi_requires_credentials: >-
+        The Conversions API needs both a dataset ID and an access token before it can be enabled.
+      meta_pixel_invalid_test_event_code: >-
+        A Test Events code is a short token of letters, digits, hyphens or underscores.
+
+  discourse_meta_pixel:
+    admin:
+      title: "Meta Pixel"
+
+  # `dashboard.problem.<identifier>` is where ProblemCheck#translation_key
+  # looks, and the identifier is the class name underscored. There is no
+  # `problem_check` namespace in core; a message filed anywhere else renders on
+  # the dashboard as "Translation missing".
+  dashboard:
+    problem:
+      meta_pixel_capi_credentials: >-
+        The Conversions API is enabled but the access token or dataset ID is missing. Delivery is
+        asynchronous, so this fails silently: every conversion is queued and every one of them
+        fails. Set both in the plugin's settings, or turn the Conversions API off.
+      meta_pixel_test_mode_active: >-
+        A Meta Test Events code is configured. Events sent with a test code appear only in the Test
+        Events tab of Events Manager and do not count as conversions. Clear
+        'meta pixel test event code' once you have finished verifying.

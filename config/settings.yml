@@ -1,0 +1,139 @@
+discourse_meta_pixel_capi:
+  discourse_meta_pixel_enabled:
+    default: false
+    client: true
+
+  # ---------------------------------------------------------------------
+  # Pixel (browser)
+  # ---------------------------------------------------------------------
+  meta_pixel_pixel_enabled:
+    default: true
+    client: true
+  # Meta calls this the Pixel ID in Events Manager and the dataset ID in the
+  # Conversions API documentation. It is the same value, and it is not a
+  # secret — it ships in the browser.
+  meta_pixel_dataset_id:
+    default: ""
+    client: true
+    validator: "DiscourseMetaPixel::DatasetIdValidator"
+
+  # ---------------------------------------------------------------------
+  # Conversions API (server)
+  # ---------------------------------------------------------------------
+  meta_pixel_capi_enabled:
+    default: false
+    client: true
+    validator: "DiscourseMetaPixel::CapiEnabledValidator"
+  # Server only. `client: false` and `secret: true` together keep this out of
+  # the site settings payload, out of the bootstrap JSON and masked in the
+  # admin UI. It must never become client-visible.
+  meta_pixel_capi_access_token:
+    default: ""
+    client: false
+    secret: true
+  # v26.0 is the newest release (2026-07-29). Meta's guidance is to use the
+  # latest, each version is supported for at least two years, and the /events
+  # edge is stable across versions — so the newest is also the one with the
+  # longest runway. Move it forward on your own schedule.
+  meta_pixel_graph_api_version:
+    default: "v26.0"
+    client: false
+    validator: "DiscourseMetaPixel::GraphApiVersionValidator"
+  # Set only while verifying in Events Manager → Test Events. Events sent with
+  # a test code do not count as conversions.
+  meta_pixel_test_event_code:
+    default: ""
+    client: false
+    validator: "DiscourseMetaPixel::TestEventCodeValidator"
+
+  # ---------------------------------------------------------------------
+  # Events
+  # ---------------------------------------------------------------------
+  meta_pixel_track_page_view:
+    default: true
+    client: true
+  meta_pixel_track_view_content:
+    default: true
+    client: true
+  meta_pixel_track_search:
+    default: false
+    client: true
+  meta_pixel_track_topic_engaged:
+    default: true
+    client: true
+  meta_pixel_topic_engaged_seconds:
+    default: 30
+    min: 5
+    max: 3600
+    client: true
+  meta_pixel_track_complete_registration:
+    default: true
+    client: true
+  meta_pixel_track_topic_created:
+    default: true
+    client: true
+  meta_pixel_track_reply_created:
+    default: true
+    client: true
+
+  # ---------------------------------------------------------------------
+  # Matching and privacy
+  # ---------------------------------------------------------------------
+  # Sends a SHA-256 of the member's email address, obtained server-side and
+  # never serialized into JavaScript. Off by default: it materially increases
+  # what is shared with Meta and usually needs to be disclosed.
+  meta_pixel_enhanced_email_matching:
+    default: false
+    client: false
+  # Sends an opaque HMAC of the user id — never a username or email.
+  meta_pixel_external_id_matching:
+    default: true
+    client: false
+  # Honour a visitor's Do Not Track / tracking preference where the browser
+  # reports one.
+  # Group ids, so a private or hidden group can be excluded without the browser
+  # ever learning which groups were chosen. Defaults to admins and moderators.
+  meta_pixel_excluded_groups:
+    type: group_list
+    list_type: compact
+    default: "1|2"
+    allow_any: false
+    client: false
+
+  meta_pixel_respect_do_not_track:
+    default: true
+    client: true
+  # Never send content events for anything that is not anonymously visible.
+  # Turning this off does not enable private-message tracking; private messages
+  # are excluded unconditionally.
+  meta_pixel_public_content_only:
+    default: true
+    client: true
+
+  # ---------------------------------------------------------------------
+  # Delivery
+  # ---------------------------------------------------------------------
+  # Must exceed Meta's 48 hour deduplication window, hence the 7 day minimum.
+  # Meta accepts up to 1000 events per request. 100 keeps a rejected batch
+  # cheap to isolate event by event.
+  meta_pixel_batch_size:
+    default: 100
+    min: 1
+    max: 1000
+  # How long a partly-filled batch waits. The real ceiling is Meta's 48-hour
+  # deduplication window, not its 7-day event_time window: past 48 hours the
+  # browser and server copies stop being one event and start being two.
+  meta_pixel_batch_max_wait_seconds:
+    default: 300
+    min: 10
+    max: 3600
+
+  meta_pixel_delivery_retention_days:
+    default: 30
+    min: 7
+    max: 365
+    client: false
+
+  meta_pixel_debug_mode:
+    default: false
+    client: true
