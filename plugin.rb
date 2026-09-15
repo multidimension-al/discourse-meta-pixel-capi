@@ -2,7 +2,7 @@
 
 # name: discourse-meta-pixel-capi
 # about: Meta Pixel and Conversions API for Discourse, with browser/server event deduplication, background delivery and hard exclusion of private and restricted content.
-# meta_topic_id:
+# meta_topic_id: 412405
 # version: 0.1.0
 # authors: Multidimension.al
 # url: https://github.com/multidimension-al/discourse-meta-pixel-capi
