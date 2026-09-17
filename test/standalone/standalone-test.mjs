@@ -28,6 +28,11 @@ import {
   topicExclusion,
   topicIsEligible,
 } from "../../assets/javascripts/discourse/lib/meta-eligibility.js";
+import {
+  fbqMethodFor,
+  isStandardEvent,
+  STANDARD_EVENTS,
+} from "../../assets/javascripts/discourse/lib/meta-standard-events.js";
 
 test("generated event ids match the shape the server enforces", () => {
   for (let i = 0; i < 200; i++) {
@@ -199,4 +204,37 @@ test("route names are refused independently of the path", () => {
 test("suppression survives a subfolder install", () => {
   assert.ok(isSensitiveRoute({ url: "/forum/admin/x", basePath: "/forum/" }));
   assert.ok(!isSensitiveRoute({ url: "/forum/latest", basePath: "/forum/" }));
+});
+
+test("standard events are sent through fbq('track')", () => {
+  for (const name of STANDARD_EVENTS) {
+    assert.equal(isStandardEvent(name), true, name);
+    assert.equal(fbqMethodFor(name), "track", name);
+  }
+});
+
+test("this plugin's own events are sent through fbq('trackCustom')", () => {
+  for (const name of ["TopicEngaged", "TopicCreated", "ReplyCreated"]) {
+    assert.equal(isStandardEvent(name), false, name);
+    assert.equal(fbqMethodFor(name), "trackCustom", name);
+  }
+});
+
+test("every mirrored event is classified deliberately", () => {
+  const expected = {
+    PageView: "track",
+    ViewContent: "track",
+    Search: "track",
+    TopicEngaged: "trackCustom",
+  };
+
+  for (const name of MIRRORED_EVENTS) {
+    assert.equal(fbqMethodFor(name), expected[name], name);
+  }
+});
+
+test("an unknown name falls back to trackCustom", () => {
+  for (const name of ["", null, undefined, "pageview", "viewcontent", "Nope"]) {
+    assert.equal(fbqMethodFor(name), "trackCustom", JSON.stringify(name));
+  }
 });

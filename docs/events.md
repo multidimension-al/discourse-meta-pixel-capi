@@ -19,6 +19,13 @@ Every event the plugin can send. Exclusions are absolute: where the table says
 body to `/meta-pixel/events`, which the server re-validates before sending its
 own copy with the same event ID.
 
+`PageView`, `ViewContent`, `Search` and `CompleteRegistration` are Meta's own
+standard events and go through `fbq('track')`. `TopicEngaged` is not, so it
+goes through `fbq('trackCustom')` — sent the other way `fbevents.js` logs a
+non-standard event warning and Events Manager does not treat it as a custom
+conversion. The Conversions API draws no such distinction, so the server half
+is unchanged either way and the two copies still deduplicate.
+
 ## Payload
 
 Every event carries:

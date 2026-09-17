@@ -29,14 +29,28 @@ export function fbqCalls() {
   return window.__metaPixelCalls || [];
 }
 
+/**
+ * Standard events go through `fbq('track')` and custom ones through
+ * `fbq('trackCustom')`, so anything asserting "was this event fired" has to
+ * accept either method — and `trackMethodOf` is how a test pins down which.
+ */
+const TRACK_METHODS = ["track", "trackCustom"];
+
 export function trackedEvents(name) {
-  return fbqCalls().filter((call) => call[0] === "track" && call[1] === name);
+  return fbqCalls().filter(
+    (call) => TRACK_METHODS.includes(call[0]) && call[1] === name
+  );
 }
 
 export function trackedEventNames() {
   return fbqCalls()
-    .filter((call) => call[0] === "track")
+    .filter((call) => TRACK_METHODS.includes(call[0]))
     .map((call) => call[1]);
+}
+
+/** `"track"` or `"trackCustom"` — the `fbq` method a recorded call used. */
+export function trackMethodOf(call) {
+  return call[0];
 }
 
 /** The `eventID` passed as the fourth argument to `fbq('track', ...)`. */

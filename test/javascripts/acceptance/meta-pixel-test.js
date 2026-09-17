@@ -11,6 +11,7 @@ import {
   resetPixel,
   trackedEventNames,
   trackedEvents,
+  trackMethodOf,
 } from "../helpers/meta-pixel-helpers";
 
 const SETTINGS = {
@@ -134,6 +135,25 @@ acceptance("Meta Pixel | events", function (needs) {
     const events = trackedEvents("ViewContent");
     assert.strictEqual(events.length, 1);
     assert.deepEqual(events[0][2].content_ids, ["280"]);
+  });
+
+  // Sending a standard event through `trackCustom` would lose Meta's own
+  // reporting for it, exactly as sending a custom one through `track` earns a
+  // console warning and a second-class custom conversion.
+  test("standard events are sent through fbq('track')", async function (assert) {
+    await visit("/");
+    const pixel = this.owner.lookup("service:meta-pixel");
+
+    pixel.track("ViewContent", { topicId: PUBLIC_TOPIC.id });
+
+    assert.strictEqual(
+      trackMethodOf(trackedEvents("PageView").at(-1)),
+      "track"
+    );
+    assert.strictEqual(
+      trackMethodOf(trackedEvents("ViewContent").at(-1)),
+      "track"
+    );
   });
 
   // The property Meta's deduplication depends on. If these ever diverge the
@@ -324,6 +344,15 @@ acceptance("Meta Pixel | engagement", function (needs) {
 
     advance(engagement, 1);
     assert.strictEqual(trackedEvents("TopicEngaged").length, 1, "fired");
+
+    // Not one of Meta's standard events: sent through `track` it still
+    // arrives, but fbevents.js warns and Events Manager does not treat it as a
+    // custom conversion.
+    assert.strictEqual(
+      trackMethodOf(trackedEvents("TopicEngaged")[0]),
+      "trackCustom",
+      "a custom event goes through trackCustom"
+    );
 
     advance(engagement, 300);
     assert.strictEqual(
