@@ -124,6 +124,11 @@ dashboard warns if you leave it set.
 | `ReplyCreated` | server only | |
 | `CompleteRegistration` | server, paired to browser | |
 
+`TopicEngaged` is the one event Meta does not define, so the Pixel sends it
+with `fbq('trackCustom')` rather than `fbq('track')`; the rest are standard
+events. The Conversions API treats both the same, so this only affects the
+browser half.
+
 Browser events POST a minimal body to `/meta-pixel/events`, which the server
 re-validates and re-derives everything from. That endpoint is not a Conversions
 API proxy: it accepts four event names, an event ID, and optionally a topic ID

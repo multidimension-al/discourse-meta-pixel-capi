@@ -4,6 +4,7 @@ import EmbedMode from "discourse/lib/embed-mode";
 import { isTesting } from "discourse/lib/environment";
 import { MIRRORED_EVENTS } from "../lib/meta-eligibility";
 import { generateEventId, isValidEventId32Plus } from "../lib/meta-event-id";
+import { fbqMethodFor } from "../lib/meta-standard-events";
 
 const MIRROR_ENDPOINT = "/meta-pixel/events";
 
@@ -141,7 +142,11 @@ export default class MetaPixelService extends Service {
     const eventId = generateEventId();
 
     if (this.pixelEnabled && this.fbqAvailable) {
-      window.fbq("track", eventName, customData, { eventID: eventId });
+      // `TopicEngaged` is not one of Meta's standard events, so it goes
+      // through `trackCustom`. See lib/meta-standard-events.
+      window.fbq(fbqMethodFor(eventName), eventName, customData, {
+        eventID: eventId,
+      });
       this.diagnostics.pixelEvents++;
     }
 
@@ -211,7 +216,9 @@ export default class MetaPixelService extends Service {
         return false;
       }
 
-      window.fbq("track", eventName, customData, { eventID: eventId });
+      window.fbq(fbqMethodFor(eventName), eventName, customData, {
+        eventID: eventId,
+      });
 
       this.diagnostics.pixelEvents++;
       this.diagnostics.lastEvent = eventName;
